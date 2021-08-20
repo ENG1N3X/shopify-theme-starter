@@ -1,0 +1,40 @@
+<div class="grid-container">
+  
+  <nav class="grid-x align-justify">
+    {% for link in linklists[section.settings.nav].links %}
+      <a href="{{ link.url }}">{{ link.title }}</a>
+    {% endfor %}
+    {% if shop.customer_accounts_enabled %}
+      <a href="/account">Account</a>
+    {% endif %}
+    <button type="button" data-toggle-cart>cart</button>
+  </nav>
+  
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "tag": "header",
+  "class": "header",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "nav",
+      "label": "Navigation",
+      "default": "main-menu"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo"
+    },
+    {
+      "type": "url",
+      "id": "logo_url",
+      "label": "URL"
+    }
+  ],
+  "blocks": []
+}
+{% endschema %}

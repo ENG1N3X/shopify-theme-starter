@@ -1,0 +1,60 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "shopify-theme-starter",
+    "theme_version": "1.0.0",
+    "theme_author": "Yuriy K. @eng1n3x",
+    "theme_documentation_url": "https://github.com/ENG1N3X/shopify-theme-starter",
+    "theme_support_url": "https://github.com/ENG1N3X/shopify-theme-starter"
+  },
+  {
+    "name": "Favicon",
+    "settings": [
+      {
+        "id": "favicon",
+        "type": "image_picker",
+        "label": "Favicon"
+      }
+    ]
+  },
+  {
+    "name": "Social Links",
+    "settings": [
+      {
+        "type": "url",
+        "id": "instagram",
+        "label": "Instagram"
+      },
+      {
+        "type": "url",
+        "id": "twitter",
+        "label": "Twitter"
+      },
+      {
+        "type": "url",
+        "id": "facebook",
+        "label": "Facebook"
+      },
+      {
+        "type": "url",
+        "id": "vimeo",
+        "label": "Vimeo"
+      },
+      {
+        "type": "url",
+        "id": "youtube",
+        "label": "Youtube"
+      },
+      {
+        "type": "text",
+        "id": "email",
+        "label": "Email"
+      },
+      {
+        "type": "url",
+        "id": "pinterest",
+        "label": "Pinterest"
+      }
+    ]
+  }
+]
