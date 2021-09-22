@@ -10,4 +10,10 @@ shopify theme serve
 shopify whoami
 ```
 
+# Theme Kit
+```bash
+theme watch --env=production & theme open --env=production --allow-live
+```
+
 [List of Shopify CLI Commands](https://shopify.dev/themes/tools/cli/theme-commands)
+[List of Theme Kit Commands](https://shopify.dev/themes/tools/theme-kit/command-reference)
