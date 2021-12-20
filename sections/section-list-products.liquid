@@ -1,7 +1,6 @@
 {% assign collection = collections[section.settings.collection] %}
 
 <h1 class="text-center">{{ collection.title }}</h1>
-<br>
 
 <div class="grid-x">
   {% for product in collection.products %}
@@ -9,12 +8,11 @@
   {% endfor %}
 </div>
 
-
 {% schema %}
 {
   "name": "List Products",
   "tag": "section",
-  "class": "list-products-section",
+  "class": "list-products",
   "settings": [
     {
       "type": "collection",

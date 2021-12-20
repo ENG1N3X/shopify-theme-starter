@@ -1,0 +1,110 @@
+<div class="cart-header">
+  <div class="grid-x align-middle grid-padding-x grid-padding-y">
+    <div class="cell small-4">
+      <button type="button" class="toggle-cart" data-toggle-cart>
+        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10" fill="none">
+          <path d="M0.500221 9.87507C0.450869 9.87536 0.401945 9.8659 0.356256 9.84723C0.310567 9.82857 0.269011 9.80107 0.233971 9.76632C0.198823 9.73146 0.170925 9.68998 0.151887 9.64429C0.132849 9.59859 0.123047 9.54957 0.123047 9.50007C0.123047 9.45057 0.132849 9.40155 0.151887 9.35585C0.170925 9.31016 0.198823 9.26868 0.233971 9.23382L9.23397 0.23382C9.30459 0.163206 9.40036 0.123535 9.50022 0.123535C9.60008 0.123535 9.69586 0.163206 9.76647 0.23382C9.83708 0.304433 9.87676 0.400206 9.87676 0.50007C9.87676 0.599933 9.83708 0.695706 9.76647 0.76632L0.766471 9.76632C0.731431 9.80107 0.689875 9.82857 0.644186 9.84723C0.598497 9.8659 0.549574 9.87536 0.500221 9.87507Z" fill="#4F4F4F"/>
+          <path d="M9.49958 9.87507C9.45023 9.87536 9.40131 9.8659 9.35562 9.84723C9.30993 9.82857 9.26837 9.80107 9.23333 9.76632L0.233331 0.76632C0.162717 0.695706 0.123047 0.599933 0.123047 0.500069C0.123047 0.400206 0.162717 0.304433 0.233331 0.233819C0.303945 0.163206 0.399718 0.123535 0.499581 0.123535C0.599444 0.123535 0.695217 0.163206 0.765831 0.233819L9.76583 9.23382C9.80098 9.26868 9.82888 9.31016 9.84792 9.35585C9.86695 9.40155 9.87676 9.45057 9.87676 9.50007C9.87676 9.54957 9.86695 9.59859 9.84792 9.64429C9.82888 9.68998 9.80098 9.73146 9.76583 9.76632C9.73079 9.80107 9.68924 9.82857 9.64355 9.84723C9.59786 9.8659 9.54893 9.87536 9.49958 9.87507Z" fill="#4F4F4F"/>
+        </svg>
+      </button>
+    </div>
+    <div class="cell small-4 text-center">
+      <h3 class="h2">Cart</h3>
+    </div>
+    <div class="cell small-4">
+      <span class="item_count">{{ cart.item_count }}</span>
+    </div>
+  </div>
+</div>
+
+<div class="cart-body">
+  <div class="cart-items">
+    {% if cart.item_count > 0 %}
+      {% for line_item in cart.items %}
+
+        <div class="cart-item">
+          <a href="{{ line_item.url }}" class="image">
+            <img 
+              class="absolute w-full h-full top-0 left-0 object-cover"
+              src="{{ line_item.image | img_url: 'master' }}" 
+              alt="{{ line_item.image.alt }}">
+          </a>
+          <div class="content">
+            <a href="{{ line_item.url }}" class="title">{{ line_item.title }}</a>
+            {%- comment -%}
+            {% unless line_item.product.has_only_default_variant %}
+            <span class="variant">Variant: {{ line_item.variant.title }}</span>
+            {% endunless %}
+            {%- endcomment -%}
+
+            <div class="flex-container">
+              <div style="flex: 1;">
+
+                <div class="quantity-box">
+                  <button type="button" class="quantity-minus">
+                    −
+                  </button>
+                  <input 
+                    class="quantity-value"
+                    type="text" 
+                    pattern="^\d{1,2}$" 
+                    value="{{ line_item.quantity }}" 
+                    data-key="{{ line_item.key }}" 
+                    min="0" 
+                    max="{{ line_item.variant.inventory_quantity }}" 
+                  />
+                  <button type="button" class="quantity-plus">
+                    +
+                  </button>
+                </div>
+
+              </div>
+              <div style="flex: 1;">
+                <div class="cart-money-control" 
+                    data-line-item-price="{{ line_item.original_price }}" 
+                    data-line-item-quantity="{{ line_item.quantity }}">
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <button 
+            data-key="{{ line_item.key }}"
+            type="button" 
+            class="remove-from-basket">
+            remove
+          </button>
+        </div>
+      {% endfor %}
+    {% else %}
+      <span class="no-items">No items in the cart.</span>
+    {% endif %}
+  </div>
+</div>
+
+<div class="cart-footer">
+  {% if section.settings.shipping_taxes != blank %}
+    <span class="shipping-taxes">{{ section.settings.shipping_taxes }}</span>
+  {% endif %}
+  <a {% if cart.item_count > 0 %}href="/checkout"{% endif %} class="btn primary">
+    Checkout 
+    <span class="total_price" data-cart-total-price="{{ cart.total_price }}"></span>
+  </a>
+</div>
+
+{% schema %}
+{
+  "name": "Cart AJAX",
+  "tag": "section",
+  "class": "cart-ajax",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "shipping_taxes",
+      "label": "Text above the checkout button",
+      "default": "Shipping & taxes calculated at checkout"
+    }
+  ]
+}
+{% endschema %}

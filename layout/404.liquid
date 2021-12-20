@@ -9,17 +9,16 @@
   {% endif %} 
   <meta name="theme-color" content="" />
   <link rel="canonical" href="{{ canonical_url }}">
-  {% if settings.favicon %}
-    <link rel="icon" type="image/png" href="{{ settings.favicon | img_url: '32x' }}" />
-  {% endif %}
-  <title>{{ page_title }}{% if current_page != 1 %} &ndash; Page {{ current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}</title>
+  
+  {% render 'favicon-snippet' %}
+  {% render 'title-snippet' %}
   
   {{ content_for_header }}
 
   {% render "style-tags" %}
   {% render "script-tags" %}
 </head>
-<body class="{{ request.page_type }}-template {% if template.suffix %}{{ template.suffix }}{% endif %}">
+<body class="{% if template contains "customers" %}main-customer{% elsif template contains "404" %}main-404{% else %}main-{{ template.name }}{% endif %}">
   <main role="main">
     {{ content_for_layout }}
   </main>

@@ -21,7 +21,7 @@
 
     <div class="top">
       <div class="image">
-        <img src="{{ product.featured_image.src | img_url: 'master' }}" alt="{{- product.title | truncatewords: 2, '...' -}}">
+        <img src="{{ product.featured_image.src | img_url: 'master' }}" alt="{{- product.featured_image.alt -}}">
       </div>
     </div>
     <div class="bottom">

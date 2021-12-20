@@ -1,5 +1,5 @@
-<section class="pagination">
-  {% if paginate.pages > 1 %}
+{% if paginate.pages > 1 %}
+  <section class="pagination">
     {% if paginate.previous.is_link %}
       <a href="{{ paginate.previous.url }}">PREV</a>
     {% endif %}
@@ -7,5 +7,5 @@
     {% if paginate.next.is_link %}
       <a href="{{ paginate.next.url }}">NEXT</a>
     {% endif %}
-  {% endif %}
-</section>
+  </section>
+{% endif %}

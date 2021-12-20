@@ -1,5 +1,10 @@
 <nav class="breadcrumbs">
-    <a href="/">Home</a>
-    <a href="{{ product.collections[0].url }}">{{ product.collections[0].title }}</a>
-    <a href="{{ product.url }}">{{ product.title }}</a>
+    <a href="{{ routes.root_url }}">Home</a>
+    {% if product != blank %}
+        <a href="{{ product.collections[0].url }}">{{ product.collections[0].title }}</a>
+        <a href="{{ product.url }}">{{ product.title }}</a>
+    {% endif %}
+    {% if page != blank %}
+        <a href="{{ page.url }}">{{ page.title }}</a>
+    {% endif %}
 </nav>

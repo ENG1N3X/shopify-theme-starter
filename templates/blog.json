@@ -1,10 +1,10 @@
 {
   "sections": {
-    "blog-template": {
-      "type": "blog-template"
+    "main": {
+      "type": "main-blog"
     }
   },
   "order": [
-    "blog-template"
+    "main"
   ]
 }

@@ -1,6 +1,4 @@
-window.theme = window.theme || {}
-
-theme.utils = (function () {
+Shopify.theme.utils = (function () {
 	const showToast = (message, type) => {
 		nativeToast({
 			message,
@@ -15,11 +13,10 @@ theme.utils = (function () {
 	const init = () => {
 		// https://****.myshopify.com/challenge
 		if ($(".shopify-challenge__button")) {
-			$(this).addClass("primary")
 			$(".shopify-challenge__button").addClass("primary")
 		}
 
-		$(".click").click(function (e) {
+		$(".click").on("click", function (e) {
 			e.preventDefault()
 		})
 	}
@@ -29,126 +26,172 @@ theme.utils = (function () {
 	}
 })()
 
-theme.cart = (function () {
-	const updateCart = async ($item) => {
-		try {
-			let response = await fetch("/cart/change.js", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({ quantity: $item.val(), id: $item.data("item-key") }),
-			})
-			if (!response.ok) {
-				throw new Error("Update cart request error!")
-			}
-			if ($item.val() > 0) {
-				theme.utils.showToast("Quantity changed!")
-				openCart()
-			} else {
-				theme.utils.showToast("Deleted!")
-				openCart()
-			}
-		} catch (e) {
-			console.error("Update cart error", e)
-			const error = JSON.parse(e.responseText)
-			if (error.status == 422) {
-				theme.utils.showToast("Out Of Stock!", "error")
-			} else {
-				theme.utils.showToast("Update cart error!", "error")
-			}
-		}
-	}
-	const addToCart = async (formData) => {
-		try {
-			const response = await fetch("/cart/add.js", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(formData),
-			})
-			if (!response.ok) {
-				throw response
-			}
-			console.log("Successed!")
-			theme.utils.showToast("Added!")
-			openCart()
-			return await response.json()
-		} catch (e) {
-			console.error("Add to cart failed", e)
-			if (e.status == 422) {
-				theme.utils.showToast("Out Of Stock!", "error")
-			} else {
-				theme.utils.showToast("Add to cart failed!", "error")
-			}
-		}
-	}
-	const openCart = function () {
-		$(".cart").addClass("active")
-		$(".cart .content-loader").empty().append(`<div class="ring-loader"><div></div><div></div><div></div><div></div></div>`)
-		$(".cart .content-loader").load("/cart?view=ajax", function () {
-			const cartJson = JSON.parse($(".content-loader").find("#cartJSON").text())
-			$(".item_count").text(cartJson.item_count)
-			// commands here
-			$("[data-remove-item-cart]").click(function (e) {
-				e.preventDefault()
-				updateCart($(this))
-			})
+Shopify.theme.cart = (function () {
+	const addItem = (id, quantity = 1) => {
+		const cartItems = $("section.cart-ajax .cart-items")
+		cartItems.replaceWith(`<div class="loader"></div>`)
+
+		fetch("/cart/add.js", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				items: [
+					{
+						id: Number(id),
+						quantity: quantity,
+					},
+				],
+			}),
 		})
+			.then((response) => {
+				if (!response.ok) {
+					if (response.status === 422) {
+						throw "Out of Stock!"
+					} else if (response.status === 404) {
+						throw "Can not find variant!"
+					} else {
+						throw "Something went wrong. Please reload the page!"
+					}
+				}
+				return response.json()
+			})
+			.then((data) => {
+				toggleCart()
+				updateCartHTML("section-ajax-cart")
+				Shopify.theme.showToast("Success", "south", "success")
+				console.log("/cart/add.js", data)
+			})
+			.catch((e) => {
+				toggleCart()
+				updateCartHTML("section-ajax-cart")
+				Shopify.theme.showToast(e, "south", "error")
+				console.error("/cart/add.js", e)
+			})
 	}
+
+	const changeItemById = (id, quantity = 0) => {
+		const cartItems = $("section.cart-ajax .cart-items")
+		cartItems.replaceWith(`<div class="loader"></div>`)
+
+		fetch("/cart/change.js", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ id, quantity }),
+		})
+			.then((response) => {
+				if (!response.ok) {
+					if (response.status === 422) {
+						throw "Out of Stock!"
+					} else if (response.status === 404) {
+						throw "Can not find variant!"
+					} else {
+						throw "Something went wrong. Please reload the page!"
+					}
+				}
+				return response.json()
+			})
+			.then((data) => {
+				if (quantity > 0) {
+					let item_quantity = data.items.filter((i) => i.key == id)[0].quantity
+					if (quantity != item_quantity) {
+						throw "Out of Stock!"
+					} else {
+						data.customResponseStatus = "Quantity changed"
+					}
+				} else {
+					data.customResponseStatus = "Removed"
+				}
+				return data
+			})
+			.then((data) => {
+				toggleCart()
+				updateCartHTML("section-ajax-cart")
+				Shopify.theme.showToast(data.customResponseStatus, "south", "success")
+				console.log("/cart/change.js", data)
+			})
+			.catch((e) => {
+				toggleCart()
+				updateCartHTML("section-ajax-cart")
+				Shopify.theme.showToast(e, "south", "error")
+				console.error("/cart/change.js", e)
+			})
+	}
+
+	const updateCartHTML = (section) => {
+		fetch(`/?section_id=${section}`)
+			.then((response) => response.text())
+			.then((data) => {
+				const currentCart = $("section.cart-ajax")
+				const updatedCart = $($.parseHTML(data))
+
+				const item_count = updatedCart.find(".item_count").text()
+
+				$(".item_count").text(item_count)
+				currentCart.find(".cart-body").replaceWith(updatedCart.find(".cart-body"))
+
+				if (item_count > 0) {
+					currentCart.find(".cart-footer a").attr("href", "/checkout")
+				} else {
+					currentCart.find(".cart-footer a").attr("href", "#!")
+				}
+				currentCart.find(".cart-footer .total_price").replaceWith(updatedCart.find(".cart-footer .total_price"))
+			})
+			.catch((e) => {
+				console.error(`/?section_id=${section}`, e)
+			})
+	}
+
+	const toggleCart = () => {
+		if (!$("section.cart-ajax").hasClass("active")) {
+			$("section.cart-ajax").addClass("active")
+			updateCartHTML("section-ajax-cart")
+		} else {
+			$("section.cart-ajax").removeClass("active")
+		}
+	}
+
+	if (window.location.href.includes("oc=true")) {
+		toggleCart()
+		updateCartHTML("section-ajax-cart")
+	}
+
 	const init = function () {
-		$("[data-add-to-cart]").click(function (e) {
+		$("[data-add-to-cart]").on("click", function (e) {
 			e.preventDefault()
 			const formData = {
 				items: [
 					{
-						id: $(".product-variants").find("input[name='id']:checked").val(),
-						quantity: $(".product-variants").find("input[name='quantity']").val(),
+						id: $("input[name='id']:checked").val(),
+						quantity: $("input[name='quantity']").val(),
 					},
 				],
 			}
 			addToCart(formData)
 		})
 
-		$("[data-toggle-cart]").click(function (e) {
+		$("[data-toggle-cart]").on("click", function (e) {
 			e.preventDefault()
-			$(".cart").hasClass("active") ? $(".cart").removeClass("active") : openCart()
+			toggleCart()
 		})
 	}
 	return {
 		init,
-		addToCart,
+		addItem,
+		changeItemById,
+		updateCartHTML,
+		toggleCart
 	}
 })()
 
-theme.carouseles = (function () {
+Shopify.theme.carouseles = (function () {
 	// owl.carousel
 	const owlCarouseles = [
 			{
-				selector: "#product-slider",
-				getSettings: function () {
-					return {
-						nav: $(this.selector).data("nav"),
-						dots: $(this.selector).data("dots"),
-						loop: $(this.selector).data("loop"),
-						items: $(this.selector).data("items"),
-						autoplay: $(this.selector).data("autoplay"),
-						autoplayHoverPause: true,
-						navText: ["<span></span>", "<span></span>"],
-						dotsContainer: "#product-slider-dots",
-						onInitialized: function (event) {
-							const target = event.target.id ? event.target.id : event.target.classList[0]
-							console.log(`${target} has been initialized.`)
-							$("#product-slider-dots .owl-dot").click(function () {
-								$("#product-slider").trigger("to.owl.carousel", [$(this).index(), 300])
-							})
-						},
-					}
-				},
-			},
-			{
-				selector: "#recommendations-slider",
+				selector: "#slider",
 				getSettings: function () {
 					return {
 						autoplayHoverPause: true,
@@ -186,107 +229,21 @@ theme.carouseles = (function () {
 		initializeOwlCarousel(owlCarouseles.filter((carousel) => carousel.selector == selector)[0])
 	}
 
-	// swiper
-	// const swiperCarouseles = [
-	// 	{
-	// 		selector: "#index-slider-1",
-	// 		getSettings: function () {
-	// 			return {
-	// 				direction: "vertical",
-	// 				slidesPerView: 1,
-	// 				spaceBetween: 0,
-	// 				speed: 1000,
-	// 				invert: true,
-	// 				simulateTouch: false,
-	// 				mousewheel: {
-	// 					invert: true,
-	// 				},
-	// 				effect: "coverflow",
-	// 				coverflowEffect: {
-	// 					rotate: 100,
-	// 				},
-	// 				on: {
-	// 					init: function (swiper) {
-	// 						console.log(`Swiper #${swiper.el.id} has been initialized.`)
-	// 						theme.indexSliderOne = swiper
-	// 					},
-	// 					afterInit: function (swiper) {
-	// 						// slide to last slide after initializing
-	// 						swiper.slideTo(swiper.slides.length - 1, 0, false)
-	// 					},
-	// 					scroll: function (swiper, event) {
-	// 						// slide on scroll
-	// 						if (event.deltaY > 0) {
-	// 							window.theme.indexSliderTwo.slideNext(swiper.params.speed, true)
-	// 						} else if (event.deltaY < 0) {
-	// 							window.theme.indexSliderTwo.slidePrev(swiper.params.speed, true)
-	// 						}
-	// 					},
-	// 				},
-	// 			}
-	// 		},
-	// 	},
-	// ]
-	// initializeSwiperCarousel = (carousel) => ($(carousel.selector).length > 0 ? new Swiper(carousel.selector, carousel.getSettings()) : false)
-	// reInitializeSwiperCarousel = (selector) => {
-	// 	console.log("Need to fix")
-	// }
-
-	// Initializing
 	const init = function () {
 		owlCarouseles.forEach(initializeOwlCarousel)
-		// swiperCarouseles.forEach(initializeSwiperCarousel)
 	}
 	return {
 		init,
 		reInitializeOwlCarousel,
-		// reInitializeSwiperCarousel,
 	}
 })()
 
-theme.loadProductRecomendations = async function () {
-	//-- Recommendations on product page
-	const $container = $(".recommendations")
-	const $section = $container.parent().parent()
-
-	if ($container.length > 0) {
-		const baseUrl = $container.data("base-url")
-		const productId = $container.data("product-id")
-		const sectionId = $container.data("section-id")
-		const limit = $container.data("limit")
-		const requestURL = `${baseUrl}?section_id=${sectionId}&limit=${limit}&product_id=${productId}`
-
-		try {
-			$container.replaceWith(`<div class="ring-loader"><div></div><div></div><div></div><div></div></div>`)
-			let response = await fetch(requestURL, { method: "GET" })
-			if (!response.ok) {
-				throw new Error("Failed to load product recommendations.")
-			}
-			response = await response.text()
-			$section.replaceWith(response)
-			theme.carouseles.reInitializeOwlCarousel("#recommendations-slider")
-			console.log("Recommended products loaded.")
-		} catch (e) {
-			console.error(e.message)
-		}
-	}
-}
-
-theme.customizer = (function () {
+Shopify.theme.customizer = (function () {
 	if (Shopify.designMode) {
 		document.addEventListener("shopify:section:load", function (event) {
 			console.log("shopify:section:load triggered.")
-			if ($(event.target).hasClass("shopify-product-template")) {
-				theme.carouseles.reInitializeOwlCarousel("#product-slider")
-			}
-
-			if ($(event.target).hasClass("shopify-index-template")) {
-				theme.carouseles.reInitializeSwiperCarousel("#index-slider-1")
-			}
-
-			if ($(event.target).hasClass("product-recommendations")) {
-				theme.carouseles.reInitializeOwlCarousel("#recommendations-slider")
-				theme.loadProductRecomendations()
+			if ($(event.target).hasClass("main-product")) {
+				Shopify.theme.carouseles.reInitializeOwlCarousel("#slider")
 			}
 		})
 		// document.addEventListener("shopify:section:unload", function (event) {
@@ -310,13 +267,12 @@ theme.customizer = (function () {
 	}
 })()
 
-theme.init = function () {
-	theme.utils.init()
-	theme.cart.init()
-	theme.carouseles.init()
-	theme.loadProductRecomendations()
+Shopify.theme.init = function () {
+	Shopify.theme.utils.init()
+	Shopify.theme.cart.init()
+	Shopify.theme.carouseles.init()
 }
 
 $(function () {
-	theme.init()
+	Shopify.theme.init()
 })

@@ -2,7 +2,7 @@
   {
     "name": "theme_info",
     "theme_name": "shopify-theme-starter",
-    "theme_version": "1.0.0",
+    "theme_version": "2.0.0",
     "theme_author": "Yuriy K. @eng1n3x",
     "theme_documentation_url": "https://github.com/ENG1N3X/shopify-theme-starter",
     "theme_support_url": "https://github.com/ENG1N3X/shopify-theme-starter"
@@ -11,9 +11,140 @@
     "name": "Favicon",
     "settings": [
       {
-        "id": "favicon",
+        "type": "header",
+        "content": "Favicon"
+      },
+      {
         "type": "image_picker",
-        "label": "Favicon"
+        "id": "favicon_16_16",
+        "label": "Favicon the size of 16 х 16px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_32_32",
+        "label": "Favicon the size of 32 х 32px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_96_96",
+        "label": "Favicon the size of 96 х 96px"
+      },
+      {
+        "type": "header",
+        "content": "Android"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_android_36_36",
+        "label": "Favicon for Android devices the size of 36 х 36px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_android_48_48",
+        "label": "Favicon for Android devices the size of 48 х 48px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_android_72_72",
+        "label": "Favicon for Android devices the size of 72 х 72px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_android_96_96",
+        "label": "Favicon for Android devices the size of 96 х 96px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_android_144_144",
+        "label": "Favicon for Android devices the size of 144 х 144px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_android_192_192",
+        "label": "Favicon for Android devices the size of 192 х 192px"
+      },
+      {
+        "type": "header",
+        "content": "Apple"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_apple_57_57",
+        "label": "Favicon for Apple devices the size of 57 х 57px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_apple_60_60",
+        "label": "Favicon for Apple devices the size of 60 х 60px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_apple_72_72",
+        "label": "Favicon for Apple devices the size of 72 х 72px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_apple_76_76",
+        "label": "Favicon for Apple devices the size of 76 х 76px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_apple_114_144",
+        "label": "Favicon for Apple devices the size of 114 х 114px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_apple_120_120",
+        "label": "Favicon for Apple devices the size of 120 х 120px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_apple_144_144",
+        "label": "Favicon for Apple devices the size of 144 х 144px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_apple_152_152",
+        "label": "Favicon for Apple devices the size of 152 х 152px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_apple_180_180",
+        "label": "Favicon for Apple devices the size of 180 х 180px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_apple-precomposed",
+        "label": "Favicon for Apple devices (Precomposed)"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_apple-icon",
+        "label": "Favicon for Apple devices"
+      },
+      {
+        "type": "header",
+        "content": "Microsoft"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_ms_70_70",
+        "label": "Favicon for Apple devices the size of 70 х 70px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_ms_144_144",
+        "label": "Favicon for Apple devices the size of 144 х 144px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_ms_150_150",
+        "label": "Favicon for Apple devices the size of 150 х 150px"
+      },
+      {
+        "type": "image_picker",
+        "id": "favicon_ms_310_310",
+        "label": "Favicon for Apple devices the size of 310 х 310px"
       }
     ]
   },
