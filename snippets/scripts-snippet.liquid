@@ -4,3 +4,8 @@
 <!-- <script defer src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous"></script> -->
 <!-- <script defer src="https://unpkg.com/swiper/swiper-bundle.min.js"></script> -->
 <script defer src="{{ 'theme.js' | asset_url }}"></script>
+{% if template.suffix == "release" %}
+  <script defer crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+  <script defer crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  <script defer src="{{ 'reactjs-cdn.js' | asset_url }}"></script>
+{% endif %}

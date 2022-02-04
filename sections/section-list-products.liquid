@@ -2,10 +2,12 @@
 
 <h1 class="text-center">{{ collection.title }}</h1>
 
-<div class="grid-x">
-  {% for product in collection.products %}
-    {% render 'product-snippet', product: product, classes: "cell medium-4" %}
-  {% endfor %}
+<div class="grid-container">
+  <div class="grid-x">
+    {% for product in collection.products %}
+      {% render 'product-snippet', product: product, classes: "cell medium-4" %}
+    {% endfor %}
+  </div>
 </div>
 
 {% schema %}

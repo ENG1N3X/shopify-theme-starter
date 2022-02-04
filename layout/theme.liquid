@@ -7,8 +7,13 @@
   {% if page_description %}
     <meta name="description" content="{{ page_description | escape }}" />
   {% endif %} 
-  <meta name="theme-color" content="" />
   <link rel="canonical" href="{{ canonical_url }}">
+  <link rel="preconnect" href="https://cdn.shopify.com">
+  <link rel="preconnect" href="https://fonts.shopifycdn.com">
+  <link rel="dns-prefetch" href="https://productreviews.shopifycdn.com">
+  <link rel="dns-prefetch" href="https://ajax.googleapis.com">
+  <link rel="dns-prefetch" href="https://maps.googleapis.com">
+  <link rel="dns-prefetch" href="https://maps.gstatic.com">
   
   {% render 'favicon-snippet' %}
   {% render 'title-snippet' %}
@@ -17,17 +22,19 @@
 
   <script>
     Shopify.theme = {
-      "moneyFormat": "{{ shop.money_format }}",
-      "moneyWithCurrencyFormat": "{{ shop.money_with_currency_format }}"
+      "moneyFormat": "{{ shop.money_format | remove: '<span class=money>' | remove: '</span>' }}",
+      "moneyWithCurrencyFormat": "{{ shop.money_with_currency_format | remove: '<span class=money>' | remove: '</span>' }}"
     }
   </script>
 
-  {% render "style-tags" %}
-  {% render "script-tags" %}
+  {% render "fonts-snippet" %}
+  {% render "styles-snippet" %}
+  {% render "scripts-snippet" %}
+
   {% render 'judgeme_core' %}
 </head>
 
-<body class="{% if template contains "customers" %}main-customer{% elsif template contains "404" %}main-404{% else %}main-{{ template.name }}{% endif %}">
+<body class="{% if template contains "customers" %}main-customer{% elsif template contains "404" %}main-404{% elsif template %}main-{{ template.name }}{% endif %} {% if request.path == '/challenge' %}main-challenge{% endif %} {% if template.suffix %}{{ template.suffix }}-suffix{% endif %}">
   {% section 'header' %}
 
   <main role="main">

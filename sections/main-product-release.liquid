@@ -1,0 +1,31 @@
+<div class="grid-container">
+  <div class="grid-x">
+    <div class="cell medium-6">
+      <img src="{{ product.featured_image.src | img_url: 'master' }}" alt="{{ product.featured_image.src.alt }}" loading="lazy">
+    </div>
+    <div class="cell medium-6">
+      <h1>Product: {{ product.title }}</h1>
+      <span>Money: {{ product.selected_or_first_available_variant.price | money }}</span>
+      <br>
+
+      <div id="app"></div>
+
+    </div>
+  </div>
+</div>
+
+{% render 'product-schema-snippet', product: product %}
+
+<script id="productJSON" type="application/json">
+  {{ product | json | escape }}
+</script>
+
+{% schema %}
+{
+  "name": "Product Release",
+  "tag": "section",
+  "class": "main-product-release",
+  "settings": [],
+  "blocks": []
+}
+{% endschema %}
