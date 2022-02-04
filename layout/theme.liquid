@@ -24,6 +24,7 @@
 
   {% render "style-tags" %}
   {% render "script-tags" %}
+  {% render 'judgeme_core' %}
 </head>
 
 <body class="{% if template contains "customers" %}main-customer{% elsif template contains "404" %}main-404{% else %}main-{{ template.name }}{% endif %}">

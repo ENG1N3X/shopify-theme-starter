@@ -1,5 +1,27 @@
 
-<h1>Product</h1>
+<h1>Product: {{ product.title }}</h1>
+<p>Money: {{ product.price | money }}</p>
+
+<div>
+  {% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', jm_style: '', concierge_install: false, product: product %}
+</div>
+
+{% unless product.has_only_default_variant %}
+<select>
+  {% for variant in product.variants %}
+  	<option value="{{ variant.id }}">{{ variant.title }} - {{ variant.price }}</option>
+  {% endfor %}
+</select>
+{% endunless %}
+
+<input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" />
+<input type="hidden" name="quantity" value="{{ product.selected_or_first_available_variant.quantity }}" />
+
+{% if product.available %}
+<button type="button">Buy</button>
+{% else %}
+<button type="button">Sold Out</button>
+{% endif %}
 
 {% render 'product-schema-snippet', product: product %}
 

@@ -1,3 +1,5 @@
+Shopify.theme = Shopify.theme || {}
+
 Shopify.theme.utils = (function () {
 	const showToast = (message, type) => {
 		nativeToast({
@@ -183,7 +185,7 @@ Shopify.theme.cart = (function () {
 		addItem,
 		changeItemById,
 		updateCartHTML,
-		toggleCart
+		toggleCart,
 	}
 })()
 

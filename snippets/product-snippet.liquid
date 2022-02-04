@@ -25,6 +25,9 @@
       </div>
     </div>
     <div class="bottom">
+      <div class="judgme-badge">
+        {% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', jm_style: '', concierge_install: false, product: product %}
+      </div>
       <h4 class="title">{{- product.title -}}</h4>
       <span class="money">
         {% if product.compare_at_price > product.price %}

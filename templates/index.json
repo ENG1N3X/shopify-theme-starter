@@ -1,7 +1,10 @@
 {
   "sections": {
     "section-list-products": {
-      "type": "section-list-products"
+      "type": "section-list-products",
+      "settings": {
+        "collection": "frontpage"
+      }
     }
   },
   "order": [

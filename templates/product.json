@@ -1,10 +1,25 @@
 {
   "sections": {
     "main": {
-      "type": "main-product"
+      "type": "main-product",
+      "settings": {
+      }
+    },
+    "16425140286ae28488": {
+      "type": "section-product-reviews",
+      "settings": {
+      }
+    },
+    "1640013555fc969321": {
+      "type": "section-product-recommendations",
+      "settings": {
+        "limit": 4
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "16425140286ae28488",
+    "1640013555fc969321"
   ]
 }

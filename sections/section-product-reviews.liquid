@@ -1,0 +1,19 @@
+{{ product.title }}
+
+{% render 'judgeme_widgets', widget_type: 'judgeme_review_widget', concierge_install: false, product: product %}
+
+{% schema %}
+  {
+    "name": "Product Reviews",
+	"tag": "section",
+	"class": "product-reviews",
+    "settings": [],
+ 	"blocks": [],
+    "presets": [
+        {
+          "category": "Sections",
+          "name": "Product Reviews"
+        }
+	]
+  }
+{% endschema %}
